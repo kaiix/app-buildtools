@@ -1,18 +1,19 @@
 #!/bin/sh
 
 APP_NAME=noname
+APP_VER=$(grep -oE 'android:versionName="[0-9.]+"' AndroidManifest.xml|grep -oE "[0-9.]+")
+GIT_VER=$(git rev-parse --short HEAD)
+BUILD_PATH=build
 
 archive()
 {
-    APP_VER=v$(grep -oE 'android:versionName="[0-9.]+"' AndroidManifest.xml|grep -oE "[0-9.]+")
-    GIT_VER=r$(git rev-parse --short HEAD)
 
-    APK_NAME=${APP_NAME}-release-${APP_VER}-${GIT_VER}.apk
+    APK_NAME=${APP_NAME}-release-v${APP_VER}-r${GIT_VER}.apk
 
 	echo [Archive] ${APK_NAME} ...
 
     cp bin/${APP_NAME}-release.apk build/${APK_NAME}
-    cd build
+    cd ${BUILD_PATH}
     unlink ${APP_NAME}-release.apk 2>/dev/null
     rm -f $(readlink ${APP_NAME}-release.apk)
     ln -s ${APK_NAME} ${APP_NAME}-release.apk
@@ -22,9 +23,7 @@ archive()
 
 tag()
 {
-    VERSION=$(grep -oE 'android:versionName="[0-9.]+"' AndroidManifest.xml|grep -oE "[0-9.]+")
-
-	echo [TAG] version = $VERSION
+	echo [TAG] version = $APP_VER
 
     echo [TAG] Does version correct? [y/n]
     read ok
@@ -32,7 +31,7 @@ tag()
         exit
     fi
 
-    VER_TAG=${APP_NAME}-v${VERSION}
+    VER_TAG=${APP_NAME}-v${APP_VER}
     echo [TAG] tagging ${VER_TAG}
 
     git tag ${VER_TAG}

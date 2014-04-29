@@ -29,7 +29,7 @@ install: check_env
 	$(ADB) install -r build/$(APP_NAME)-release.apk
 	$(ADB) shell am start -n $(PKG_NAME)/$(MAIN_ACTIVITY)
 
-build: check_env clean
+release: check_env clean
 	@echo [====== Build Release Version ======]
 	ant clean
 	ant release
