@@ -13,10 +13,6 @@ build:
 			   clean build \
 
 archive:
-	rm -f $(BUILD_PATH)/$(APP_NAME).ipa
-	xcrun -sdk iphoneos PackageApplication \
-	      -v $(BUILD_PATH)/Products/Release-iphoneos/$(APP_NAME).app \
-		  -o $(BUILD_PATH)/$(APP_NAME)-release.ipa
-
+	@./buildtools.sh --archive
 
 release: build archive
